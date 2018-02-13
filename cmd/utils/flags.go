@@ -693,17 +693,17 @@ func setIPC(ctx *cli.Context, cfg *node.Config) {
 // makeDatabaseHandles raises out the number of allowed file handles per process
 // for Geth and returns half of the allowance to assign to the database.
 func makeDatabaseHandles() int {
-	if err := raiseFdLimit(2048); err != nil {
+	if err := raiseFdLimit(16384); err != nil {
 		Fatalf("Failed to raise file descriptor allowance: %v", err)
 	}
 	limit, err := getFdLimit()
 	if err != nil {
 		Fatalf("Failed to retrieve file descriptor allowance: %v", err)
 	}
-	if limit > 2048 { // cap database file descriptors even if more is available
-		limit = 2048
+	if limit > 16384 { // cap database file descriptors even if more is available
+		limit = 16384
 	}
-	return limit / 2 // Leave half for networking and other stuff
+	return limit / 16 // Leave half for networking and other stuff
 }
 
 // MakeAddress converts an account specified directly as a hex encoded string or
